@@ -13,7 +13,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "settle_sphere_mobile";
+    return "Settle Sphere";
   }
 
   /**

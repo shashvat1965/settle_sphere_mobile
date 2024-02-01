@@ -40,7 +40,7 @@ export default function SignMessageButton() {
         }
         setSigningInProgress(true);
         try {
-          const message = 'Hello world!';
+          const message = 'settlesphere';
           const messageBuffer = new Uint8Array(
             message.split('').map(c => c.charCodeAt(0)),
           );

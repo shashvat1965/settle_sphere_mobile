@@ -1,9 +1,9 @@
-import {useConnection} from '../components/providers/ConnectionProvider';
-import React, {useState, useCallback} from 'react';
-import {Button} from 'react-native';
-import {Account} from './providers/AuthorizationProvider';
-import {alertAndLog} from '../util/alertAndLog';
-import {LAMPORTS_PER_SOL} from '@solana/web3.js';
+import { useConnection } from "./providers/ConnectionProvider";
+import React, { useState, useCallback } from "react";
+import { Button } from "react-native";
+import { Account } from "./providers/AuthorizationProvider";
+import { alertAndLog } from "../util/alertAndLog";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 type Props = Readonly<{
   selectedAccount: Account;
@@ -11,8 +11,8 @@ type Props = Readonly<{
 }>;
 
 function convertLamportsToSOL(lamports: number) {
-  return new Intl.NumberFormat(undefined, {maximumFractionDigits: 1}).format(
-    (lamports || 0) / LAMPORTS_PER_SOL,
+  return new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 }).format(
+    (lamports || 0) / LAMPORTS_PER_SOL
   );
 }
 
@@ -22,12 +22,12 @@ export default function RequestAirdropButton({
   selectedAccount,
   onAirdropComplete,
 }: Props) {
-  const {connection} = useConnection();
+  const { connection } = useConnection();
   const [airdropInProgress, setAirdropInProgress] = useState(false);
   const requestAirdrop = useCallback(async () => {
     const signature = await connection.requestAirdrop(
       selectedAccount.publicKey,
-      LAMPORTS_PER_AIRDROP,
+      LAMPORTS_PER_AIRDROP
     );
 
     return await connection.confirmTransaction(signature);
@@ -45,16 +45,16 @@ export default function RequestAirdropButton({
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const result = await requestAirdrop();
           alertAndLog(
-            'Funding successful:',
+            "Funding successful:",
             String(convertLamportsToSOL(LAMPORTS_PER_AIRDROP)) +
-              ' SOL added to ' +
-              selectedAccount.publicKey,
+              " SOL added to " +
+              selectedAccount.publicKey
           );
           onAirdropComplete(selectedAccount);
         } catch (err: any) {
           alertAndLog(
-            'Failed to fund account:',
-            err instanceof Error ? err.message : err,
+            "Failed to fund account:",
+            err instanceof Error ? err.message : err
           );
         } finally {
           setAirdropInProgress(false);
