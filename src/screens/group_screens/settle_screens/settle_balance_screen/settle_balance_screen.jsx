@@ -164,7 +164,15 @@ export default function SettleBalanceScreen({ route }) {
           <View />
         ) : (
           <Pressable>
-            <View style={styles.buttonContainerPay} onTouchEnd={settleBalance}>
+            <View style={styles.buttonContainerPay} onTouchEnd={async () => {
+              try {
+                await settleBalance();
+              } catch (e) {
+                console.log(e);
+                setLoading(false);
+                ToastAndroid.show("Error", ToastAndroid.SHORT)
+              }
+            }}>
               {isLoading ? (
                 <ActivityIndicator />
               ) : (

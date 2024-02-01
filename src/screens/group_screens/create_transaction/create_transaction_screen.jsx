@@ -63,39 +63,15 @@ export default function CreateTransactionScreen() {
     }
   }
 
-  async function makeAllTxns() {
-    console.log(txnMap);
-    return;
+  async function addExpense() {
     setLoading(true);
-    const expenses = Object.keys(txnMap.current).map((id) => {
-      if (id.toString() === payer.toString()) return Promise.resolve();
-      addExpense(id, txnMap.current[id]);
-    });
-
-    Promise.all(expenses)
-      .then((responses) => {
-        console.log(responses);
-      })
-      .then((data) => {
-        setLoading(false);
-        nav.goBack();
-        console.log(data);
-      })
-      .catch((error) => {
-        // handle any errors
-        console.error(error);
-      });
-  }
-
-  async function addExpense(id) {
-    //create a temp map same as txn map but with the keys of int as well
     const tempTxnMap = {};
-    Object.keys(txnMap.current).forEach((key) => {
-      tempTxnMap[parseInt(key.toString())] = txnMap.current[key];
+    Object.keys(txnMap.current).forEach((id) => {
+      tempTxnMap[id] = parseFloat(txnMap.current[id].toFixed(2));
     });
-  
+    console.log(tempTxnMap);
     const raw = JSON.stringify({
-      lender: parseInt(id),
+      lender: tempTxnMap,
       receiver: payer,
       amount: amount.current,
       note: note.current,
@@ -113,11 +89,17 @@ export default function CreateTransactionScreen() {
       }
     );
     const text = await response.text();
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      console.error("JSON Parsing Error:", error);
+    if(response.status !== 200){
+      setLoading(false);
+      ToastAndroid.show("Error in adding expense", ToastAndroid.SHORT);
     }
+    if(response.ok){
+      setLoading(false);
+      nav.goBack();
+      return;
+    }
+    setLoading(false);
+    ToastAndroid.show("Error", ToastAndroid.SHORT);
   }
   return (
     <View style={styles.screenContainer}>
@@ -294,34 +276,34 @@ export default function CreateTransactionScreen() {
         style={styles.addExpenseBtn}
         onTouchEnd={async () => {
           calculateTxnMap();
-          // if (note.current === "") {
-          //   ToastAndroid.show("Please enter a note", ToastAndroid.SHORT);
-          //   return;
-          // }
-          // if (amount.current === 0) {
-          //   ToastAndroid.show("Amount cannot be 0", ToastAndroid.SHORT);
-          //   return;
-          // }
-          // console.log(txnMap.current);
-          // if (Object.keys(txnMap.current).length === 0) {
-          //   ToastAndroid.show(
-          //     "Please select atleast one person",
-          //     ToastAndroid.SHORT
-          //   );
-          //   return;
-          // }
-          // const sumOfTxnMap = Object.values(txnMap.current).reduce(
-          //   (a, b) => a + b,
-          //   0
-          // );
-          // if (sumOfTxnMap !== amount.current) {
-          //   ToastAndroid.show(
-          //     "Total Amount not matching the Individual Shares",
-          //     ToastAndroid.LONG
-          //   );
-          //   return;
-          // }
-          // await makeAllTxns();
+          if (note.current === "") {
+            ToastAndroid.show("Please enter a note", ToastAndroid.SHORT);
+            return;
+          }
+          if (amount.current === 0) {
+            ToastAndroid.show("Amount cannot be 0", ToastAndroid.SHORT);
+            return;
+          }
+          console.log(txnMap.current);
+          if (Object.keys(txnMap.current).length === 0) {
+            ToastAndroid.show(
+              "Please select atleast one person",
+              ToastAndroid.SHORT
+            );
+            return;
+          }
+          const sumOfTxnMap = Object.values(txnMap.current).reduce(
+            (a, b) => a + b,
+            0
+          );
+          if (sumOfTxnMap !== amount.current) {
+            ToastAndroid.show(
+              "Total Amount not matching the Individual Shares",
+              ToastAndroid.LONG
+            );
+            return;
+          }
+          await addExpense();
         }}
       >
         {isLoading ? (
