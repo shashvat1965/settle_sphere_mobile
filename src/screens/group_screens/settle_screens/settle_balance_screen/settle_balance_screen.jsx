@@ -12,10 +12,10 @@ import ChevronLeft from "../../../../../assets/svg/chevron_left";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { horizontalScale, verticalScale } from "../../../../utils/dimensions";
-import { useConnection } from "../../../../../components/providers/ConnectionProvider";
+import { useConnection } from "../../../../solana_providers/ConnectionProvider";
 import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol-web3js";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
-import { useAuthorization } from "../../../../../components/providers/AuthorizationProvider";
+import { useAuthorization } from "../../../../solana_providers/AuthorizationProvider";
 import { useGlobalStore } from "../../../../store/global_store";
 
 export default function SettleBalanceScreen({ route }) {

@@ -1,11 +1,11 @@
 import {
   ConnectionProvider,
   RPC_ENDPOINT,
-} from "./components/providers/ConnectionProvider";
+} from "./src/solana_providers/ConnectionProvider";
 import { clusterApiUrl } from "@solana/web3.js";
 import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { AuthorizationProvider } from "./components/providers/AuthorizationProvider";
+import { AuthorizationProvider } from "./src/solana_providers/AuthorizationProvider";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";

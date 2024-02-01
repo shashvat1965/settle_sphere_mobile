@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { useAuthorization } from "../../../components/providers/AuthorizationProvider";
+import { useAuthorization } from "../../solana_providers/AuthorizationProvider";
 import React, { useCallback, useState } from "react";
 import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol-web3js";
 import { useNavigation } from "@react-navigation/native";

@@ -1,32 +1,12 @@
 import {PublicKey} from '@solana/web3.js';
-import {
-  Account as AuthorizedAccount,
-  AuthorizationResult,
-  AuthorizeAPI,
-  AuthToken,
-  Base64EncodedAddress,
-  DeauthorizeAPI,
-  ReauthorizeAPI,
-} from '@solana-mobile/mobile-wallet-adapter-protocol';
 import {toUint8Array} from 'js-base64';
-import {useState, useCallback, useMemo, ReactNode} from 'react';
+import {useState, useCallback, useMemo} from 'react';
 import React from 'react';
 
 import {RPC_ENDPOINT} from './ConnectionProvider';
 
-export type Account = Readonly<{
-  address: Base64EncodedAddress;
-  label?: string;
-  publicKey: PublicKey;
-}>;
 
-type Authorization = Readonly<{
-  accounts: Account[];
-  authToken: AuthToken;
-  selectedAccount: Account;
-}>;
-
-function getAccountFromAuthorizedAccount(account: AuthorizedAccount): Account {
+function getAccountFromAuthorizedAccount(account) {
   return {
     ...account,
     publicKey: getPublicKeyFromAddress(account.address),
@@ -34,10 +14,10 @@ function getAccountFromAuthorizedAccount(account: AuthorizedAccount): Account {
 }
 
 function getAuthorizationFromAuthorizationResult(
-  authorizationResult: AuthorizationResult,
-  previouslySelectedAccount?: Account,
-): Authorization {
-  let selectedAccount: Account;
+  authorizationResult,
+  previouslySelectedAccount,
+) {
+  let selectedAccount;
   if (
     // We have yet to select an account.
     previouslySelectedAccount == null ||
@@ -58,48 +38,41 @@ function getAuthorizationFromAuthorizationResult(
   };
 }
 
-function getPublicKeyFromAddress(address: Base64EncodedAddress): PublicKey {
+function getPublicKeyFromAddress(address) {
   const publicKeyByteArray = toUint8Array(address);
   return new PublicKey(publicKeyByteArray);
 }
 
 export const APP_IDENTITY = {
-  name: 'React Native dApp',
-  uri: 'https://solanamobile.com',
-  icon: 'favicon.ico',
+  name: 'Settle Sphere',
+  uri: 'https://cdn.discordapp.com/attachments/876848373720842260/1202735099863507034',
+  icon: 'Logo.png?ex=65ce8959&is=65bc1459&hm=99f2ae84220732587e848ba93141e4bf7f0328302f9c9794058f47d8dcc20902&',
 };
 
-export interface AuthorizationProviderContext {
-  accounts: Account[] | null;
-  authorizeSession: (wallet: AuthorizeAPI & ReauthorizeAPI) => Promise<Account>;
-  deauthorizeSession: (wallet: DeauthorizeAPI) => void;
-  onChangeAccount: (nextSelectedAccount: Account) => void;
-  selectedAccount: Account | null;
-}
 
-const AuthorizationContext = React.createContext<AuthorizationProviderContext>({
+const AuthorizationContext = React.createContext({
   accounts: null,
-  authorizeSession: (_wallet: AuthorizeAPI & ReauthorizeAPI) => {
+  authorizeSession: (_wallet) => {
     throw new Error('AuthorizationProvider not initialized');
   },
-  deauthorizeSession: (_wallet: DeauthorizeAPI) => {
+  deauthorizeSession: (_wallet) => {
     throw new Error('AuthorizationProvider not initialized');
   },
-  onChangeAccount: (_nextSelectedAccount: Account) => {
+  onChangeAccount: (_nextSelectedAccount) => {
     throw new Error('AuthorizationProvider not initialized');
   },
   selectedAccount: null,
 });
 
-function AuthorizationProvider(props: {children: ReactNode}) {
+function AuthorizationProvider(props) {
   const {children} = props;
-  const [authorization, setAuthorization] = useState<Authorization | null>(
+  const [authorization, setAuthorization] = useState(
     null,
   );
   const handleAuthorizationResult = useCallback(
     async (
-      authorizationResult: AuthorizationResult,
-    ): Promise<Authorization> => {
+      authorizationResult,
+    ) => {
       const nextAuthorization = getAuthorizationFromAuthorizationResult(
         authorizationResult,
         authorization?.selectedAccount,
@@ -110,7 +83,7 @@ function AuthorizationProvider(props: {children: ReactNode}) {
     [authorization, setAuthorization],
   );
   const authorizeSession = useCallback(
-    async (wallet: AuthorizeAPI & ReauthorizeAPI) => {
+    async (wallet) => {
       const authorizationResult = await (authorization
         ? wallet.reauthorize({
             auth_token: authorization.authToken,
@@ -126,7 +99,7 @@ function AuthorizationProvider(props: {children: ReactNode}) {
     [authorization, handleAuthorizationResult],
   );
   const deauthorizeSession = useCallback(
-    async (wallet: DeauthorizeAPI) => {
+    async (wallet) => {
       if (authorization?.authToken == null) {
         return;
       }
@@ -136,7 +109,7 @@ function AuthorizationProvider(props: {children: ReactNode}) {
     [authorization, setAuthorization],
   );
   const onChangeAccount = useCallback(
-    (nextSelectedAccount: Account) => {
+    (nextSelectedAccount) => {
       setAuthorization(currentAuthorization => {
         if (
           !currentAuthorization?.accounts.some(
