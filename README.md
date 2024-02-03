@@ -39,23 +39,6 @@ git clone https://github.com/shashvat1965/settle_sphere_mobile.git
 3. Launch the app on your Android device/emulator
 - `npx react-native run-android`
 
-## License
- ```     
-         DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-                    Version 2, December 2004 
-
-Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-
-Everyone is permitted to copy and distribute verbatim or modified
-copies of this license document, and changing it is allowed as long
-as the name is changed.
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-0. You just DO WHAT THE FUCK YOU WANT TO.
-```
-
 ## Reaching Out
 If you have any questions or suggestions, feel free to reach out to us at [twitter](https://twitter.com/0x__carnage)
 
