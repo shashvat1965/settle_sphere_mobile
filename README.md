@@ -1,72 +1,63 @@
-# Solana Mobile dApp Scaffold
+# Settle Sphere 
 
-A ready-to-go template Solana React Native dApp with dependencies installed and basic React UI components.
-It provides an interface to connect to locally installed wallet apps (that are MWA-compatible), view your account balance on devnet, and request an airdrop of SOL.
+This is the official repository of the mobile app of Settle Sphere. Settle Sphere is an app that can be used to split and clear bills among friends.
 
-This React Native dApp is only fully functional on Android.
+This dApp is only fully functional on Android.
+
+## Features of the App
+- Allows user to create an account by connecting to their Solana Wallet
+- Create Groups and share the invite code so that other people can join
+- Create transactions in the group that can be split either equally or in a custom fashion
+- Settle the transactions by paying the amount to the person who is owed the money directly from within the app
+- Track various statistics inside each group like total amount spent, total amount owed, etc.
 
 ## Featured Libarires
+- [React Native](https://reactnative.dev) for making the app
 - [Mobile Wallet Adapter](https://github.com/solana-mobile/mobile-wallet-adapter/tree/main/js/packages/mobile-wallet-adapter-protocol) for connecting to wallets and signing transactions/messages
 - [web3.js](https://solana-labs.github.io/solana-web3.js/) for constructing transactions and an RPC `connection` client.
+- [Zustand](https://zustand-demo.pmnd.rs/) for state management in the app
+- [React Navigation](https://reactnavigation.org) for navigation in the app
+- [MMKV Storage](https://github.com/mrousavy/react-native-mmkv) for local storage
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/3d83d3dc-ab65-4a2c-881d-8a229f34e392" alt="Scaffold dApp Screenshot 1" width=300 />
-    </td>
-    <td align="center">
-      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/2fd69bd4-834d-45e1-8c7a-f80b5b576c96" alt="Scaffold dApp Screenshot 3" width=300 />
-    </td>
-    <td align="center">
-      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/cdd93c12-d9ff-4739-81af-92da5b90303a" alt="Scaffold dApp Screenshot 2" width=300 />
-    </td>
-  </tr>
-</table>
+## Building the Project Locally
+### Prerequisites
 
-## Prerequisites
-
-If you haven't setup a React Native development environment for Android, you'll need to do that first. Follow the [Prerequisite Setup Guide](https://docs.solanamobile.com/getting-started/development-setup).
+If you haven't set up a React Native development environment for Android, you'll need to do that first. Follow the [Prerequisite Setup Guide](https://docs.solanamobile.com/getting-started/development-setup).
 
 Follow the guide to make sure you:
 - setup your Android and React Native development environment.
 - have an Android device or emulator.
 - install an MWA compliant wallet app on your device/emulator.
    
-## Usage
-1. Initialize project template
+### Setting up the project
+1. Clone the project
 ```
-npx react-native init MySolanaDapp --template @solana-mobile/solana-mobile-dapp-scaffold --npm
+git clone https://github.com/shashvat1965/settle_sphere_mobile.git
 ```
 2. Install dependencies
 - `yarn install` or `npm install`
 3. Launch the app on your Android device/emulator
 - `npx react-native run-android`
 
-## Troubleshooting
-  
-- `TypeError: cli.init is not a function` 
-  - This during template initialization means you have an old version of React Native CLI.
-This template only works with the new CLI. You can uninstall and reinstall it as directed [here](https://stackoverflow.com/questions/72768245/typeerror-cli-init-is-not-a-function-for-react-native).
+## License
+ ```     
+         DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+                    Version 2, December 2004 
 
-<br>
+Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
 
-- `error Failed to load configuration of your project.`
-  - Same as above, but for `yarn`. [Uninstall and reinstall](https://github.com/react-native-community/cli#updating-the-cli) the CLI through yarn.
+Everyone is permitted to copy and distribute verbatim or modified
+copies of this license document, and changing it is allowed as long
+as the name is changed.
 
-<br>
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
-- `Looks like your iOS environment is not properly set`:
-  -  You can ignore this during template initialization and build the Android app as normal. This template is only compatible with Android.
+0. You just DO WHAT THE FUCK YOU WANT TO.
+```
 
-<br>
-
-- `Usage Error: It seems you are trying to add a package using a https:... url; we now require package names to be explicitly specified.`
-  - This error happens on certain versions of `yarn`, and occurs if you try to initialize the template through the Github repo URL, rather than the npm package. To avoid this, use the `@solana-mobile/solana-mobile-dapp-scaffold` package as specified, or downgrade your `yarn` version to classic (1.22.x).
-
-<br>
-
-- `error Couldn't find the ".../@solana-mobile/solana-mobile-dapp-scaffold/template.config.js file inside "@solana-mobile/solana-mobile-dapp-scaffold" template.`
-  - This is a [known error](https://github.com/react-native-community/cli/issues/1924) that occurs with certain versions of `yarn` (>= 3.5.0). It is fixed by running the cli command with the `--npm` flag or downgrading your version of `yarn`.
+## Reaching Out
+If you have any questions or suggestions, feel free to reach out to us at [twitter](https://twitter.com/0x__carnage)
 
 
 

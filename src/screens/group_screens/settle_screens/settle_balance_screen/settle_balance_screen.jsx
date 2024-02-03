@@ -77,7 +77,11 @@ export default function SettleBalanceScreen({ route }) {
       ToastAndroid.show("Transaction failed", ToastAndroid.SHORT);
       throw new Error(JSON.stringify(confirmationResult.value.err));
     } else {
-      ToastAndroid.show("Transaction successful!", ToastAndroid.SHORT);
+      setLoading(false);
+      ToastAndroid.show(
+        "Transaction successful! You can settle now!",
+        ToastAndroid.SHORT
+      );
       console.log("Transaction successfully submitted!");
     }
   };
@@ -164,15 +168,18 @@ export default function SettleBalanceScreen({ route }) {
           <View />
         ) : (
           <Pressable>
-            <View style={styles.buttonContainerPay} onTouchEnd={async () => {
-              try {
-                await settleBalance();
-              } catch (e) {
-                console.log(e);
-                setLoading(false);
-                ToastAndroid.show("Error", ToastAndroid.SHORT)
-              }
-            }}>
+            <View
+              style={styles.buttonContainerPay}
+              onTouchEnd={async () => {
+                try {
+                  await settleBalance();
+                } catch (e) {
+                  console.log(e);
+                  setLoading(false);
+                  ToastAndroid.show("Error", ToastAndroid.SHORT);
+                }
+              }}
+            >
               {isLoading ? (
                 <ActivityIndicator />
               ) : (

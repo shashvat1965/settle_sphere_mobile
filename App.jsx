@@ -7,8 +7,8 @@ import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { AuthorizationProvider } from "./src/solana_providers/AuthorizationProvider";
 import { NavigationContainer } from "@react-navigation/native";
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import HomeScreen from "./src/screens/home_screen/home";
 import GroupScreen from "./src/screens/group_screens/group_screen";
 import CreateGroupScreen from "./src/screens/create_group/create_group";
@@ -18,6 +18,8 @@ import SelectTxnScreen from "./src/screens/group_screens/settle_screens/select_t
 import SettleBalanceScreen from "./src/screens/group_screens/settle_screens/settle_balance_screen/settle_balance_screen";
 import LoginScreen from "./src/screens/login_screen/login";
 import JoinGroupScreen from "./src/screens/join_group/join_group";
+import TransactionDetailsScreen from "./src/screens/group_screens/txn_details/transaction_details_screen";
+import ProfileScreen from "./src/screens/profile_screen/profile_screen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -34,18 +36,26 @@ export default function App() {
               screenOptions={{ headerShown: false }}
               initialRouteName={"login"}
             >
-              <Stack.Screen name="login" component={LoginScreen} />
-              <Stack.Screen name="home" component={HomeScreen} />
-              <Stack.Screen name="group" component={GroupScreen} />
-              <Stack.Screen name="create_group" component={CreateGroupScreen} />
-              <Stack.Screen name="totals" component={TotalsScreen} />
+              <Stack.Screen name={"login"} component={LoginScreen} />
+              <Stack.Screen name={"home"} component={HomeScreen} />
+              <Stack.Screen name={"group"} component={GroupScreen} />
               <Stack.Screen
-                name="create_txn"
+                name={"create_group"}
+                component={CreateGroupScreen}
+              />
+              <Stack.Screen name={"totals"} component={TotalsScreen} />
+              <Stack.Screen
+                name={"create_txn"}
                 component={CreateTransactionScreen}
               />
               <Stack.Screen name="select_txn" component={SelectTxnScreen} />
               <Stack.Screen name={"settle"} component={SettleBalanceScreen} />
               <Stack.Screen name={"join_group"} component={JoinGroupScreen} />
+              <Stack.Screen
+                name={"txn_details"}
+                component={TransactionDetailsScreen}
+              />
+              <Stack.Screen name={"profile_screen"} component={ProfileScreen} />
             </Stack.Navigator>
           </SafeAreaView>
         </AuthorizationProvider>

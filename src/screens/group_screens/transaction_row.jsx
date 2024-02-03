@@ -1,41 +1,46 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import { horizontalScale, verticalScale } from "../../utils/dimensions";
+import { useGlobalStore } from "../../store/global_store";
 
 export default function TransactionRow({
-  isSettled,
   note,
   amount,
   lender,
-  receiver,
   date,
+  netAmount,
+  type,
+  paymentMap,
 }) {
+  const users = useGlobalStore((state) => state.selectedGroupUsers);
+  const name = useGlobalStore((state) => state.name);
+
+  const getUserNameFromId = (id) => {
+    const x = users.find((user) => user.id.toString() === id).username;
+    return x === name ? "You" : x;
+  };
+
   const text = () => {
-    if (isSettled) {
-      return receiver + " Paid " + amount + " SOLs to " + lender;
+    if (type === 0) {
+      let tempNote = "";
+      Object.keys(paymentMap).map((key) => {
+        if (getUserNameFromId(key) !== lender) {
+          tempNote =
+            getUserNameFromId(key) + " Paid " + amount + " SOLs to " + lender;
+        }
+      });
+      return tempNote;
     } else {
       return note;
     }
   };
-  const status = () => {
-    if (lender === "You") {
-      return 0;
-    } else {
-      if (receiver === "You") {
-        return 1;
-      } else {
-        return 2;
-      }
-    }
-  };
+
   const statusText = () => {
-    if (lender === "You") {
-      return receiver + " Borrowed";
-    } else {
-      if (receiver === "You") {
-        return "You Lent";
-      } else {
-        return receiver + " Borrowed";
-      }
+    if (type === 3) {
+      return "Not Involved";
+    } else if (type === 1) {
+      return "You Lent";
+    } else if (type === 2) {
+      return "You Borrowed";
     }
   };
 
@@ -47,7 +52,7 @@ export default function TransactionRow({
         <Text style={styles.transactionDate}>{date}</Text>
         <View style={styles.transactionDetails}>
           <Text style={styles.transactionNote}>{text()}</Text>
-          {!isSettled ? (
+          {!(type === 0) ? (
             <View
               style={{
                 flexDirection: "row",
@@ -55,7 +60,7 @@ export default function TransactionRow({
               }}
             >
               <Text style={styles.transactionAmountText}>
-                {lender + " Paid " + amount}
+                {lender + " Paid " + netAmount}
               </Text>
               <Image source={require("../../../assets/png/solana.png")} />
             </View>
@@ -65,7 +70,7 @@ export default function TransactionRow({
         </View>
       </View>
       <>
-        {!isSettled ? (
+        {!(type === 0) ? (
           <View style={styles.transactionTypeDetails}>
             <View style={{ flex: 1 }} />
             <Text
@@ -73,20 +78,20 @@ export default function TransactionRow({
                 styles.transactionTypeDescription,
                 {
                   color:
-                    status() === 0
-                      ? "#619C12"
-                      : status() === 1
-                      ? "#AB640E"
-                      : "grey",
+                    type === 1 ? "#619C12" : type === 2 ? "#AB640E" : "grey",
                 },
               ]}
             >
               {statusText()}
             </Text>
-            <View style={{ flexDirection: "row", gap: horizontalScale(2) }}>
-              <Text style={styles.transactionTotalAmountNumber}>{amount}</Text>
-              <Image source={require("../../../assets/png/solana.png")} />
-            </View>
+            {!(type === 3) && (
+              <View style={{ flexDirection: "row", gap: horizontalScale(2) }}>
+                <Text style={styles.transactionTotalAmountNumber}>
+                  {amount}
+                </Text>
+                <Image source={require("../../../assets/png/solana.png")} />
+              </View>
+            )}
           </View>
         ) : (
           <></>

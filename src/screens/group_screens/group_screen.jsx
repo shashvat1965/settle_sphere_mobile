@@ -39,6 +39,7 @@ export default function GroupScreen() {
       }
     );
     const text = await response.text();
+    console.log(text);
     try {
       return JSON.parse(text);
     } catch (error) {
@@ -78,7 +79,7 @@ export default function GroupScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      init().then((r) => console.log("Group Screen Init"));
+      init().then((_) => console.log("Group Screen Init"));
     }, [])
   );
 

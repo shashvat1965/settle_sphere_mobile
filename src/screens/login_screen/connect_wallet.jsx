@@ -18,7 +18,7 @@ export default function ConnectWalletButton() {
   const { authorizeSession } = useAuthorization();
   const nav = useNavigation();
   const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
-  const { name, setName, setJwt, setPubKey, setProfilePicture } =
+  const { name, setName, setJwt, setPubKey, setProfilePicture, setUserId } =
     useGlobalStore(
       useShallow((state) => ({
         name: state.name,
@@ -26,6 +26,7 @@ export default function ConnectWalletButton() {
         setJwt: state.setJwt,
         setPubKey: state.setPubKey,
         setProfilePicture: state.setProfilePictureUrl,
+        setUserId: state.setUserId,
       }))
     );
 
@@ -44,6 +45,7 @@ export default function ConnectWalletButton() {
         setPubKey(data.user.pubKey);
         setName(name);
         setProfilePicture(data.user.image);
+        setUserId(data.user.id);
         nav.navigate("home");
       })
       .catch((error) => {

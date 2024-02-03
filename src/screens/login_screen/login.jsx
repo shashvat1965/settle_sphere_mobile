@@ -1,24 +1,18 @@
-import {
-  Image,
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  KeyboardAvoidingView,
-} from "react-native";
-import React, { useEffect } from "react";
+import { Image, StyleSheet, View, Text, TextInput } from "react-native";
+import React, { useCallback, useEffect } from "react";
 import ConnectWalletButton from "./connect_wallet";
 import { useGlobalStore } from "../../store/global_store";
 import { useShallow } from "zustand/react/shallow";
 import { horizontalScale, verticalScale } from "../../utils/dimensions";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen() {
-  const { name, setName, jwt } = useGlobalStore(
+  const { name, setName, jwt, setUserId } = useGlobalStore(
     useShallow((state) => ({
       name: state.name,
       setName: state.setName,
       jwt: state.jwt,
+      setUserId: state.setUserId,
     }))
   );
   const nav = useNavigation();
@@ -31,8 +25,18 @@ export default function LoginScreen() {
     setName("");
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (jwt !== "") {
+        nav.navigate("home");
+        return;
+      }
+      return () => {};
+    })
+  );
+
   return (
-    <KeyboardAvoidingView style={styles.loginContainer}>
+    <View style={styles.loginContainer}>
       <Image
         style={styles.img}
         source={require("../../../assets/png/login_asset.png")}
@@ -55,7 +59,7 @@ export default function LoginScreen() {
       ) : (
         <View />
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

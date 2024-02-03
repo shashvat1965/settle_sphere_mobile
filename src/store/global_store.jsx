@@ -14,6 +14,9 @@ export const useGlobalStore = create(
       jwt: "",
       setJwt: (newJwt) => set({ jwt: newJwt }),
 
+      globalUserId: null,
+      setUserId: (newId) => set({ globalUserId: newId }),
+
       netAmount: 0.0,
       setNetAmount: (newAmount) => set({ netAmount: newAmount }),
 
@@ -43,6 +46,7 @@ export const useGlobalStore = create(
         name: state.name,
         jwt: state.jwt,
         profilePictureUrl: state.profilePictureUrl,
+        pubKey: state.pubKey,
       }),
     }
   )

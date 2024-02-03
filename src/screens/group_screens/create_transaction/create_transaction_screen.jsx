@@ -89,11 +89,11 @@ export default function CreateTransactionScreen() {
       }
     );
     const text = await response.text();
-    if(response.status !== 200){
+    if (response.status !== 200) {
       setLoading(false);
       ToastAndroid.show("Error in adding expense", ToastAndroid.SHORT);
     }
-    if(response.ok){
+    if (response.ok) {
       setLoading(false);
       nav.goBack();
       return;
@@ -138,7 +138,7 @@ export default function CreateTransactionScreen() {
             keyboardType={"numeric"}
             textAlignVertical="bottom"
             onChange={(event) => {
-              amount.current = parseInt(event.nativeEvent.text);
+              amount.current = parseFloat(event.nativeEvent.text);
             }}
           />
         </View>
@@ -256,15 +256,16 @@ export default function CreateTransactionScreen() {
                   textAlignVertical="bottom"
                   onChange={(event) => {
                     if (amount.current === 0) return;
-                    if (parseInt(event.nativeEvent.text) > 0) {
+                    if (parseFloat(event.nativeEvent.text) > 0) {
                       const newTxnMap = { ...txnMap.current };
-                      newTxnMap[user.id] = parseInt(event.nativeEvent.text);
+                      newTxnMap[user.id] = parseFloat(event.nativeEvent.text);
                       txnMap.current = newTxnMap;
                     } else {
                       const newTxnMap = { ...txnMap.current };
                       delete newTxnMap[user.id];
                       txnMap.current = newTxnMap;
                     }
+                    console.log(txnMap);
                   }}
                 />
               )}
@@ -276,6 +277,7 @@ export default function CreateTransactionScreen() {
         style={styles.addExpenseBtn}
         onTouchEnd={async () => {
           calculateTxnMap();
+          console.log(amount);
           if (note.current === "") {
             ToastAndroid.show("Please enter a note", ToastAndroid.SHORT);
             return;
@@ -325,14 +327,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(28),
   },
   addExpenseBtn: {
-    position: "absolute",
-    bottom: verticalScale(60),
     borderRadius: 4,
     backgroundColor: "#0382EB",
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: verticalScale(12),
+    marginBottom: verticalScale(30),
     width: "100%",
   },
   addExpenseTxt: {

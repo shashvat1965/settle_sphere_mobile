@@ -23,7 +23,13 @@ export default function HomeHeader() {
             style={{ height: verticalScale(30), width: horizontalScale(40) }}
           />
         </Pressable>
-        <Image source={{ uri: avatar }} style={styles.avatar} />
+        <Pressable
+          onPress={() => {
+            nav.navigate("profile_screen");
+          }}
+        >
+          <Image source={{ uri: avatar }} style={styles.avatar} />
+        </Pressable>
       </View>
     </View>
   );

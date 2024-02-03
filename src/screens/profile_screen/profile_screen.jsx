@@ -5,139 +5,120 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  ToastAndroid,
   View,
 } from "react-native";
 import ChevronLeft from "../../../assets/svg/chevron_left";
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import { horizontalScale, verticalScale } from "../../utils/dimensions";
-import * as ImagePicker from "react-native-image-picker";
 import { useGlobalStore } from "../../store/global_store";
+import SolanaLogo from "../../../assets/svg/solana";
 
-export default function CreateGroupScreen() {
+export default function ProfileScreen() {
   const nav = useNavigation();
   const jwt = useGlobalStore((state) => state.jwt);
+  const uri = useGlobalStore((state) => state.profilePictureUrl);
+  const publicKey = useGlobalStore((state) => state.pubKey);
+  const setJwt = useGlobalStore((state) => state.setJwt);
+  const [spending, setSpending] = useState("");
 
-  const [uri, setUri] = useState(null);
-  const [name, setName] = useState(null);
+  const name = useGlobalStore((state) => state.name);
   const [isLoading, setLoading] = useState(false);
 
-  const launchImageLibrary = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: "images",
-      },
-    };
-
-    ImagePicker.launchImageLibrary(options, (response) => {
-      console.log("Response = ", response.assets);
-
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else {
-        const source = response.assets[0].uri;
-        setUri(source);
-        console.log("response", JSON.stringify(response));
-      }
-    });
-  };
-
-  const createGroup = async () => {
-    if (name === null || name === "") {
-      ToastAndroid.show("Please enter a name", ToastAndroid.SHORT);
-      return;
-    }
-    if (uri === null) {
-      ToastAndroid.show("Please select an image", ToastAndroid.SHORT);
-      return;
-    }
+  const fetchStat = async () => {
     setLoading(true);
-    const body = new FormData();
-    body.append("name", name);
-    console.log("uri:", uri);
-    if (uri) {
-      body.append("image", {
-        uri: uri,
-        name: "image.jpg",
-        type: "image/jpeg",
-      });
-    }
     const response = await fetch(
-      "https://bits-dvm.org/settlesphere/api/v1/groups",
+      "https://bits-dvm.org/settlesphere/api/v1/groups/user/stats",
       {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: "Bearer" + jwt,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
-        body: body,
       }
     );
+    if (!response.ok) {
+      setSpending("Error!");
+      setLoading(false);
+    }
     const text = await response.text();
     console.log(text);
     try {
       return JSON.parse(text);
     } catch (error) {
+      setSpending("Error!");
+      setLoading(false);
       console.error("JSON Parsing Error:", error);
     }
   };
+
+  useEffect(() => {
+    fetchStat().then((res) => {
+      setSpending(res.lifetime_spending);
+      console.log(spending);
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <View style={styles.screenContainer}>
       <View style={styles.topBar}>
         <Pressable
           onPress={() => {
-            setUri(null);
             nav.goBack();
           }}
         >
           <ChevronLeft />
         </Pressable>
-        <Text style={styles.headingText}>Create a Group</Text>
+        <Text style={styles.headingText}>Profile</Text>
       </View>
       <View style={styles.detailsRow}>
-        {uri !== null ? (
-          <Pressable onPress={launchImageLibrary}>
-            <Image source={{ uri: uri }} style={styles.img} />
-          </Pressable>
-        ) : (
-          <View style={styles.addImgBtn} onTouchEnd={launchImageLibrary}>
-            <Image
-              source={require("../../../assets/png/add_image.png")}
-              style={{ height: verticalScale(31), width: horizontalScale(31) }}
-            />
-          </View>
-        )}
+        <Image source={{ uri: uri }} style={styles.img} />
         <View style={styles.textFieldColumn}>
-          <Text style={styles.txtFieldHeading}> Group Name</Text>
-          <TextInput
-            placeholder="Name"
-            placeholderTextColor="#747474"
+          <Text style={styles.txtFieldHeading}>{name}</Text>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode={"middle"}
             style={styles.groupInput}
-            textAlignVertical="bottom"
-            onChange={(event) => {
-              setName(event.nativeEvent.text);
-            }}
-          />
+          >
+            {publicKey}
+          </Text>
         </View>
       </View>
+      {isLoading ? (
+        <View style={{ flex: 1 }}>
+          <ActivityIndicator />
+        </View>
+      ) : (
+        <>
+          <View style={styles.stat}>
+            <Text style={styles.statName}>
+              Lifetime Spending on SettleSphere
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 23,
+                width: "100%",
+              }}
+            >
+              <View style={styles.logoBox}>
+                <SolanaLogo />
+              </View>
+              <Text style={styles.statValue}>{spending}</Text>
+            </View>
+          </View>
+          <View style={{ flex: 1 }} />
+        </>
+      )}
       <View
         style={styles.createBtn}
         onTouchEnd={() => {
-          if (isLoading === true) return;
-          createGroup().then(() => {
-            setLoading(false);
-            nav.goBack();
-          });
+          setJwt("");
+          nav.navigate("login");
         }}
       >
-        {isLoading ? (
-          <ActivityIndicator color={"white"} />
-        ) : (
-          <Text style={styles.createTxt}>Create</Text>
-        )}
+        <Text style={styles.createTxt}>Log Out</Text>
       </View>
     </View>
   );
@@ -166,13 +147,14 @@ const styles = StyleSheet.create({
   },
   createBtn: {
     width: "100%",
-    backgroundColor: "#0382EB",
+    backgroundColor: "#FF3535",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,
     paddingVertical: verticalScale(10),
     marginTop: verticalScale(40),
+    marginBottom: verticalScale(60),
   },
   createTxt: {
     fontFamily: "BeVietnamPro-Bold",
@@ -200,16 +182,42 @@ const styles = StyleSheet.create({
   txtFieldHeading: {
     fontFamily: "BeVietnamPro-Medium",
     color: "white",
-    fontSize: 16,
+    fontSize: 24,
   },
   textFieldColumn: {
     marginLeft: horizontalScale(16),
     flex: 1,
   },
   groupInput: {
+    paddingTop: verticalScale(16),
     fontSize: 16,
     color: "white",
+    fontFamily: "BeVietnamPro-Regular",
+  },
+  stat: {
+    marginTop: verticalScale(40),
+    gap: verticalScale(15),
+  },
+  statName: {
+    fontFamily: "BeVietnamPro-Medium",
+    color: "white",
+    fontSize: 18,
+  },
+  logoBox: {
+    padding: 15,
+    borderColor: "#0382EB",
+    borderWidth: 0.5,
+    backgroundColor: "#373A40",
+    borderRadius: 4,
+  },
+  statValue: {
+    fontSize: 18,
+    color: "white",
     borderBottomWidth: 1,
+    paddingBottom: 10,
+    flex: 1,
+    alignSelf: "flex-end",
+    textAlign: "auto",
     borderBottomColor: "white",
     fontFamily: "BeVietnamPro-Medium",
   },
