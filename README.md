@@ -2,7 +2,7 @@
 
 This is the official repository of the mobile app of Settle Sphere. Settle Sphere is an app that can be used to split and clear bills among friends.
 
-This dApp is only fully functional on Android.
+This dApp is only fully functional on Android. [Download Here](https://drive.google.com/file/d/1_LxPjS462NksnU9FZ8EJ34IqeGyiHeaz/view?usp=drive_link)
 
 ## Features of the App
 - Allows user to create an account by connecting to their Solana Wallet
