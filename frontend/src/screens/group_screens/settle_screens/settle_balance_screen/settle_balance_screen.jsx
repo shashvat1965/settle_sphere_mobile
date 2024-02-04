@@ -32,9 +32,14 @@ export default function SettleBalanceScreen({ route }) {
   const { connection } = useConnection();
   const { authorizeSession } = useAuthorization();
   const [isLoading, setLoading] = useState(false);
+  const groups = useGlobalStore((state) => state.groups);
 
   function solToLamports() {
     return amount * LAMPORTS_PER_SOL;
+  }
+
+  function getNameFromCode() {
+    return groups.find((group) => group.code === code).name;
   }
   const settleBalance = async () => {
     setLoading(true);
@@ -122,7 +127,7 @@ export default function SettleBalanceScreen({ route }) {
         <Pressable onPress={() => nav.goBack()}>
           <ChevronLeft />
         </Pressable>
-        <Text style={styles.headingText}>Group Name</Text>
+        <Text style={styles.headingText}>{getNameFromCode()}</Text>
       </View>
       <Text style={styles.helperText}>Record Payment</Text>
       <View style={styles.paymentInfo}>

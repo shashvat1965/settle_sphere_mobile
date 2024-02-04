@@ -18,6 +18,11 @@ export default function SelectTxnScreen() {
   const jwt = useGlobalStore((state) => state.jwt);
   const code = useGlobalStore((state) => state.selectedGroupCode);
   const [txns, setTxns] = useState(null);
+  const groupCode = useGlobalStore((state) => state.selectedGroupCode);
+  const groups = useGlobalStore((state) => state.groups);
+  function getNameFromCode() {
+    return groups.find((group) => group.code === groupCode).name;
+  }
 
   async function fetchTxns() {
     const response = await fetch(
@@ -66,7 +71,7 @@ export default function SelectTxnScreen() {
         <Pressable onPress={() => nav.goBack()}>
           <ChevronLeft />
         </Pressable>
-        <Text style={styles.headingText}>Group Name</Text>
+        <Text style={styles.headingText}>{getNameFromCode()}</Text>
       </View>
       <Text style={styles.helperText}> Select a Balance to Settle</Text>
       <ScrollView style={styles.balanceList}>

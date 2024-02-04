@@ -48,8 +48,9 @@ export default function TransactionsList() {
             type = 3; // not involved
           }
         }
-
-        amount = amount + txn.amount;
+        if (txn.receiverId === id || txn.payerId === id || type === 0) {
+          amount = amount + txn.amount;
+        }
 
         paymentMap[txn.receiverId] = txn.amount;
       });
@@ -104,19 +105,19 @@ export default function TransactionsList() {
     });
 
     const sortedMonths = Object.keys(organizedData).sort(
-      (a, b) => months.indexOf(a) - months.indexOf(b)
+      (a, b) => months.indexOf(b) - months.indexOf(a)
     );
 
     const sortedOrganizedData = {};
     sortedMonths.forEach((month) => {
       const sortedDates = Object.keys(organizedData[month]).sort(
-        (a, b) => a - b
+        (a, b) => b - a
       );
       sortedOrganizedData[month] = {};
 
       sortedDates.forEach((date) => {
         sortedOrganizedData[month][date] = organizedData[month][date].sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
+          (a, b) => new Date(a.date) - new Date(b.date)
         );
       });
     });

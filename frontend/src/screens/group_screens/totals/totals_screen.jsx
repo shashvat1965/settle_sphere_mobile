@@ -16,6 +16,11 @@ export default function TotalsScreen() {
   const jwt = useGlobalStore((state) => state.jwt);
   const code = useGlobalStore((state) => state.selectedGroupCode);
   const [stats, setStats] = useState(null);
+
+  const groups = useGlobalStore((state) => state.groups);
+  function getNameFromCode() {
+    return groups.find((group) => group.code === code).name;
+  }
   async function fetchStats() {
     const response = await fetch(
       "https://bits-dvm.org/settlesphere/api/v1/groups/stats/" + code,
@@ -59,7 +64,7 @@ export default function TotalsScreen() {
         <Pressable onPress={() => nav.goBack()}>
           <ChevronLeft />
         </Pressable>
-        <Text style={styles.headingText}>Group Name</Text>
+        <Text style={styles.headingText}>{getNameFromCode()}</Text>
       </View>
       <Text style={styles.summaryHeading}>Group Spending Summary</Text>
       <View style={styles.statsCol}>

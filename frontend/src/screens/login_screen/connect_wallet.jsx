@@ -3,6 +3,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from "react-native";
 import { useAuthorization } from "../../solana_providers/AuthorizationProvider";
@@ -62,23 +63,27 @@ export default function ConnectWalletButton() {
       const messageBuffer = new Uint8Array(
         message.split("").map((c) => c.charCodeAt(0))
       );
+      try {
+        const data = await transact(async (wallet) => {
+          const authorizationResult = await authorizeSession(wallet);
+          console.log(authorizationResult);
+          const signedMessages = await wallet.signMessages({
+            addresses: [authorizationResult.address],
+            payloads: [messageBuffer],
+          });
 
-      const data = await transact(async (wallet) => {
-        const authorizationResult = await authorizeSession(wallet);
-        console.log(authorizationResult);
-        const signedMessages = await wallet.signMessages({
-          addresses: [authorizationResult.address],
-          payloads: [messageBuffer],
+          return {
+            name: name,
+            pubKey: authorizationResult.publicKey,
+            signature: fromUint8Array(signedMessages[0]),
+          };
         });
-
-        return {
-          name: name,
-          pubKey: authorizationResult.publicKey,
-          signature: fromUint8Array(signedMessages[0]),
-        };
-      });
-      console.log(data);
-      await login(data);
+        console.log(data);
+        await login(data);
+      } catch (e) {
+        ToastAndroid.show("Authorization failed", ToastAndroid.SHORT);
+        setAuthorizationInProgress(false);
+      }
     }
   };
 

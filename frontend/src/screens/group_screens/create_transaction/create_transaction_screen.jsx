@@ -39,6 +39,12 @@ export default function CreateTransactionScreen() {
     pickerRef.current.focus();
   };
 
+  function getNameFromCode() {
+    const groupCode = useGlobalStore((state) => state.selectedGroupCode);
+    const groups = useGlobalStore((state) => state.groups);
+    return groups.find((group) => group.code === groupCode).name;
+  }
+
   const getUserNameFromId = (id) => {
     return users.find((user) => user.id === id).username === name
       ? "You"
@@ -107,7 +113,7 @@ export default function CreateTransactionScreen() {
         <Pressable onPress={() => nav.goBack()}>
           <ChevronLeft />
         </Pressable>
-        <Text style={styles.headingText}>Group Name</Text>
+        <Text style={styles.headingText}>{getNameFromCode()}</Text>
       </View>
       <Text style={styles.helperText}>Add Expense</Text>
       <View style={styles.detailsRow}>
@@ -298,7 +304,8 @@ export default function CreateTransactionScreen() {
             (a, b) => a + b,
             0
           );
-          if (sumOfTxnMap !== amount.current) {
+          console.log(sumOfTxnMap.toFixed(2), amount.current);
+          if (sumOfTxnMap.toFixed(2) !== amount.current.toFixed(2)) {
             ToastAndroid.show(
               "Total Amount not matching the Individual Shares",
               ToastAndroid.LONG
